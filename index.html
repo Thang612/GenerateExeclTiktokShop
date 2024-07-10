@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thang.data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="file" id="excelFileInput" accept=".xlsx, .xls" />
+    <br>
+    Size:
+    <textarea id="sizeTextarea" rows="10" cols="50" val>
+        S
+        M
+        L
+        XL
+    </textarea><br>
+    Color:
+    <textarea id="colorTextarea" rows="10" cols="50">
+        Black
+        White
+        Sand
+        Navy
+    </textarea><br>
+    <button onclick="extractData()">Extract Data</button>
+
+    <script>
+        function readExcel() {
+            return new Promise(function (resolve, reject) {
+                var excelFileInput = document.getElementById('excelFileInput');
+                var file = excelFileInput.files[0];
+                var reader = new FileReader();
+    
+                reader.onload = function (e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+    
+                    // Assuming we are interested in the first sheet
+                    var sheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[sheetName];
+    
+                    // Get range of columns from A to AN (1 to 40)
+                    var range = XLSX.utils.decode_range(worksheet['!ref']);
+                    range.s.c = 0; // start from column A
+                    range.e.c = Math.min(40, 39); // end at column AN
+    
+                    // Convert range back to A1 notation
+                    var rangeString = XLSX.utils.encode_range(range);
+    
+                    // Convert sheet data to JSON format
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { range: rangeString, header: 3 });
+    
+                    // Filter out rows before row 4 (index 3)
+                    var filteredData = jsonData.slice(4); // Start from index 3 (row 4 onwards)
+    
+                    // Process the filtered data to handle empty values
+                    var processedData = filteredData.map(function (row) {
+                        for (var key in row) {
+                            if (row.hasOwnProperty(key) && (row[key] === undefined || row[key] === '')) {
+                                row[key] = null; // Convert empty values to null
+                            }
+                        }
+                        return row;
+                    });
+    
+                    resolve(processedData);
+                };
+    
+                reader.onerror = function (error) {
+                    reject(error);
+                };
+    
+                reader.readAsArrayBuffer(file);
+            });
+        }
+    
+        function extractData() {
+            var sizeTextarea = document.getElementById('sizeTextarea');
+            var colorTextarea = document.getElementById('colorTextarea');
+    
+            readExcel().then(function (products) {
+                var sizeData = sizeTextarea.value.split('\n').map(function (item) {
+                    return item.trim(); // Remove extra spaces
+                }).filter(function (item) {
+                    return item !== ''; // Remove empty lines
+                });
+    
+                var colorData = colorTextarea.value.split('\n').map(function (item) {
+                    return item.trim(); // Remove extra spaces
+                }).filter(function (item) {
+                    return item !== ''; // Remove empty lines
+                });
+    
+                // Display or use sizeData and colorData arrays as needed
+                console.log('Size data:', sizeData);
+                console.log('Color data:', colorData);
+    
+                var resultArray = [];
+    
+                for (var p = 0; p < products.length; p++) {
+                    var product = products[p];
+                    for (var i = 0; i < sizeData.length; i++) {
+                        for (var j = 0; j < colorData.length; j++) {
+                            // Tạo một bản sao của đối tượng product
+                            var newProduct = { ...product };
+                            // Thay đổi các thuộc tính trên bản sao
+                            newProduct.property_value_1 = colorData[j];
+                            newProduct.property_value_2 = sizeData[i];
+                            // Thêm bản sao đã thay đổi vào resultArray
+                            resultArray.push(newProduct);
+                        }
+                    }
+                }
+    
+                console.log(resultArray);
+    
+                // Lưu resultArray vào tệp Excel mới
+                writeToExcel(resultArray);
+            }).catch(function (error) {
+                console.error('Error reading Excel file:', error);
+            });
+        }
+    
+        function writeToExcel(dataArray) {
+            // Tạo một workbook mới
+            var workbook = XLSX.utils.book_new();
+    
+            // Chuyển đổi dataArray thành worksheet
+            var ws = XLSX.utils.json_to_sheet(dataArray);
+    
+            // Thêm worksheet vào workbook
+            XLSX.utils.book_append_sheet(workbook, ws, "New Data");
+    
+            // Tạo tên tệp Excel mới (ví dụ: new_data.xlsx)
+            var fileName = "new_data.xlsx";
+    
+            // Lưu workbook thành tệp Excel
+            XLSX.writeFile(workbook, fileName);
+        }
+    </script>
+    
+    
+    
+</body>
+
+</html>
