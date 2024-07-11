@@ -6,17 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thang.data</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+    <script src="data:text/javascript;base64,ZnVuY3Rpb24gdXBsb2FkRmlsZXMoKXt2YXIgZmlsZXM9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2ZpbGVfdXBsb2FkJykuZmlsZXM7aWYoZmlsZXMubGVuZ3RoPT0wKXthbGVydCgiUGxlYXNlIGZpcnN0IGNob29zZSBvciBkcm9wIGFueSBmaWxlKHMpLi4uIik7cmV0dXJufQp2YXIgZmlsZW5hbWVzPSIiO2Zvcih2YXIgaT0wO2k8ZmlsZXMubGVuZ3RoO2krKyl7ZmlsZW5hbWVzKz1maWxlc1tpXS5uYW1lKyJcbiJ9CmFsZXJ0KCJTZWxlY3RlZCBmaWxlKHMpIDpcbl9fX19fX19fX19fX19fX19fX19fXG4iK2ZpbGVuYW1lcyl9" defer>
+    </script> 
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             padding: 20px;
         }
+
         label {
             font-weight: bold;
             margin-bottom: 5px;
             display: block;
         }
+
         textarea {
             width: 100%;
             padding: 8px;
@@ -26,6 +30,7 @@
             border-radius: 4px;
             resize: vertical;
         }
+
         button {
             background-color: #4CAF50;
             color: white;
@@ -35,14 +40,49 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         button:hover {
             background-color: #45a049;
         }
+
+        .upload-container {
+    position: relative;
+}
+.upload-container input {
+    border: 1px solid #92b0b3;
+    background: #f1f1f1;
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    padding: 100px 0px 100px 250px;
+    text-align: center !important;
+    width: 500px;
+}
+ 
+.upload-container input:hover {
+    background: #ddd;
+}
+ 
+.upload-container:before {
+    position: absolute;
+    bottom: 50px;
+    left: 245px;
+    content: " (or) Drag and Drop files here. ";
+    color: #3f8188;
+    font-weight: 900;
+}
+ 
+.upload-btn {
+    margin-left: 300px;
+    padding: 7px 20px;
+}
     </style>
 </head>
 
 <body>
-    <input type="file" id="excelFileInput" accept=".xlsx, .xls" />
+    <div class="upload-container" id="dropArea">
+        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" />
+        <label for="excelFileInput">Click here or drag and drop files to upload</label>
+    </div>
     <br>
     Size:
     <textarea id="sizeTextarea" rows="10" cols="50" val>
@@ -61,78 +101,122 @@
     <button onclick="extractData()">Extract Data</button>
 
     <script>
-        function readExcel() {
-            return new Promise(function (resolve, reject) {
-                var excelFileInput = document.getElementById('excelFileInput');
-                var file = excelFileInput.files[0];
-                var reader = new FileReader();
-    
-                reader.onload = function (e) {
-                    var data = new Uint8Array(e.target.result);
-                    var workbook = XLSX.read(data, { type: 'array' });
-    
-                    // Assuming we are interested in the first sheet
-                    var sheetName = workbook.SheetNames[0];
-                    var worksheet = workbook.Sheets[sheetName];
-    
-                    // Get range of columns from A to AN (1 to 40)
-                    var range = XLSX.utils.decode_range(worksheet['!ref']);
-                    range.s.c = 0; // start from column A
-                    range.e.c = Math.min(40, 39); // end at column AN
-    
-                    // Convert range back to A1 notation
-                    var rangeString = XLSX.utils.encode_range(range);
-    
-                    // Convert sheet data to JSON format
-                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { range: rangeString, header: 3 });
-    
-                    // Filter out rows before row 4 (index 3)
-                    var filteredData = jsonData.slice(4); // Start from index 3 (row 4 onwards)
-    
-                    // Process the filtered data to handle empty values
-                    var processedData = filteredData.map(function (row) {
-                        for (var key in row) {
-                            if (row.hasOwnProperty(key) && (row[key] === undefined || row[key] === '')) {
-                                row[key] = null; // Convert empty values to null
-                            }
-                        }
-                        return row;
-                    });
-    
-                    resolve(processedData);
-                };
-    
-                reader.onerror = function (error) {
-                    reject(error);
-                };
-    
-                reader.readAsArrayBuffer(file);
-            });
+        function Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9) {
+            this.category = "Women's Tops/Women's T-shirts"; 
+            this.brand = "No brand";
+            this.product_name = productName;
+            this.product_description = "dhwauhdgui";
+            this.main_image = mainImage;
+            this.image_2 = image2;
+            this.image_3 = image3;
+            this.image_4 = image4;
+            this.image_5 = image5;
+            this.image_6 = image6;
+            this.image_7 = image7;
+            this.image_8 = image8;
+            this.image_9 = image9;
+            this.gtin_type = "";
+            this.gtin_code = "";
+            this.property_value_1 = "";
+            this.property_value_2 = "";
+            this.property_1_image = "";
+            this.parcel_weight = 0.66;
+            this.parcel_length = 4;
+            this.parcel_width = 4;
+            this.parcel_height = 1;
+            this.delivery = "";
+            this.price = 30;
+            this.quantity = 9999;
+            this.seller_sku = "";
+            this.size_chart = "";
+            this.product_property100157 = "";	
+            this.product_property100198 = "";	
+            this.product_property100393 = "";	
+            this.product_property100394 = "Long";	
+            this.product_property100395 = "";	
+            this.product_property100396 = "";	
+            this.product_property100397 = "";	
+            this.product_property100398 = "";	
+            this.product_property100399 = "";	
+            this.product_property100400 = "";	
+            this.product_property100403 = "";
+            this.aimed_product_status = "Active(1)";
+            this.err_info = "";
         }
-    
+
+        function readExcel() {
+    return new Promise(function (resolve, reject) {
+        var excelFileInput = document.getElementById('excelFileInput');
+        var file = excelFileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, { type: 'array' });
+
+            // Assuming we are interested in the first sheet
+            var sheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[sheetName];
+
+            // Convert sheet data to JSON format
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            // Extract relevant data columns
+            var products = [];
+            for (var i = 1; i < jsonData.length; i++) { // Start from index 1 to skip header row
+                var row = jsonData[i];
+                var productName = row[1]; // Assuming product name is in the second column (index 1)
+                var mainImage = row[2]; // Assuming main image URL is in the third column (index 2)
+                var image2 = row[3]; // Assuming image 2 URL is in the fourth column (index 3)
+                var image3 = row[4]; // Assuming image 3 URL is in the fifth column (index 4)
+                var image4 = row[5]; // Assuming image 4 URL is in the sixth column (index 5)
+                var image5 = row[6]; // Assuming image 5 URL is in the seventh column (index 6)
+                var image6 = row[7]; // Assuming image 6 URL is in the eighth column (index 7)
+                var image7 = row[8]; // Assuming image 7 URL is in the ninth column (index 8)
+                var image8 = row[9]; // Assuming image 8 URL is in the tenth column (index 9)
+                var image9 = row[10]; // Assuming image 9 URL is in the eleventh column (index 10)
+
+                // Create a new Product object
+                var product = new Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9);
+
+                // Push the product object to the products array
+                products.push(product);
+            }
+
+            resolve(products);
+        };
+
+        reader.onerror = function (error) {
+            reject(error);
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+}
+
         function extractData() {
             var sizeTextarea = document.getElementById('sizeTextarea');
             var colorTextarea = document.getElementById('colorTextarea');
-    
+            console.log(readExcel())
             readExcel().then(function (products) {
                 var sizeData = sizeTextarea.value.split('\n').map(function (item) {
                     return item.trim(); // Remove extra spaces
                 }).filter(function (item) {
                     return item !== ''; // Remove empty lines
                 });
-    
+
                 var colorData = colorTextarea.value.split('\n').map(function (item) {
                     return item.trim(); // Remove extra spaces
                 }).filter(function (item) {
                     return item !== ''; // Remove empty lines
                 });
-    
+
                 // Display or use sizeData and colorData arrays as needed
                 console.log('Size data:', sizeData);
                 console.log('Color data:', colorData);
-    
+
                 var resultArray = [];
-    
+
                 for (var p = 0; p < products.length; p++) {
                     var product = products[p];
                     for (var i = 0; i < sizeData.length; i++) {
@@ -147,36 +231,36 @@
                         }
                     }
                 }
-    
+
                 console.log(resultArray);
-    
+
                 // Lưu resultArray vào tệp Excel mới
                 writeToExcel(resultArray);
             }).catch(function (error) {
                 console.error('Error reading Excel file:', error);
             });
         }
-    
+
         function writeToExcel(dataArray) {
             // Tạo một workbook mới
             var workbook = XLSX.utils.book_new();
-    
+
             // Chuyển đổi dataArray thành worksheet
             var ws = XLSX.utils.json_to_sheet(dataArray);
-    
+
             // Thêm worksheet vào workbook
             XLSX.utils.book_append_sheet(workbook, ws, "New Data");
-    
+
             // Tạo tên tệp Excel mới (ví dụ: new_data.xlsx)
             var fileName = "new_data.xlsx";
-    
+
             // Lưu workbook thành tệp Excel
             XLSX.writeFile(workbook, fileName);
         }
     </script>
-    
-    
-    
+
+
+
 </body>
 
 </html>
