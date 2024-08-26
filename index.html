@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thang.data</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
-    <script src="data:text/javascript;base64,ZnVuY3Rpb24gdXBsb2FkRmlsZXMoKXt2YXIgZmlsZXM9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2ZpbGVfdXBsb2FkJykuZmlsZXM7aWYoZmlsZXMubGVuZ3RoPT0wKXthbGVydCgiUGxlYXNlIGZpcnN0IGNob29zZSBvciBkcm9wIGFueSBmaWxlKHMpLi4uIik7cmV0dXJufQp2YXIgZmlsZW5hbWVzPSIiO2Zvcih2YXIgaT0wO2k8ZmlsZXMubGVuZ3RoO2krKyl7ZmlsZW5hbWVzKz1maWxlc1tpXS5uYW1lKyJcbiJ9CmFsZXJ0KCJTZWxlY3RlZCBmaWxlKHMpIDpcbl9fX19fX19fX19fX19fX19fX19fXG4iK2ZpbGVuYW1lcyl9" defer>
-    </script> 
+    <script
+        src="data:text/javascript;base64,ZnVuY3Rpb24gdXBsb2FkRmlsZXMoKXt2YXIgZmlsZXM9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2ZpbGVfdXBsb2FkJykuZmlsZXM7aWYoZmlsZXMubGVuZ3RoPT0wKXthbGVydCgiUGxlYXNlIGZpcnN0IGNob29zZSBvciBkcm9wIGFueSBmaWxlKHMpLi4uIik7cmV0dXJufQp2YXIgZmlsZW5hbWVzPSIiO2Zvcih2YXIgaT0wO2k8ZmlsZXMubGVuZ3RoO2krKyl7ZmlsZW5hbWVzKz1maWxlc1tpXS5uYW1lKyJcbiJ9CmFsZXJ0KCJTZWxlY3RlZCBmaWxlKHMpIDpcbl9fX19fX19fX19fX19fX19fX19fXG4iK2ZpbGVuYW1lcyl9"
+        defer>
+        </script>
     <style>
         body {
             color: #3f8188;
@@ -27,7 +29,6 @@
         }
 
         textarea {
-            width: 15%;
             padding: 8px;
             margin-bottom: 10px;
             box-sizing: border-box;
@@ -53,68 +54,147 @@
         }
 
         .upload-container {
-    position: relative;
-}
-.upload-container input {
-    border: 1px solid #92b0b3;
-    background: #f1f1f1;
-    outline: 2px dashed #92b0b3;
-    outline-offset: -10px;
-    padding: 100px 0px 100px 250px;
-    text-align: center !important;
-    width: 500px;
-}
- 
-.upload-container input:hover {
-    background: #ddd;
-}
- 
-.upload-container:before {
-    position: absolute;
-    bottom: 50px;
-    left: 245px;
-    content: " (or) Drag and Drop files here. ";
-    color: #3f8188;
-    font-weight: 900;
-}
- 
+            position: relative;
+        }
 
+        .upload-container input {
+            border: 1px solid #92b0b3;
+            background: #f1f1f1;
+            outline: 2px dashed #92b0b3;
+            outline-offset: -10px;
+            padding: 100px 0px 100px 250px;
+            text-align: center !important;
+            width: 500px;
+        }
 
+        .upload-container input:hover {
+            background: #ddd;
+        }
+
+        .upload-container:before {
+            position: absolute;
+            bottom: 50px;
+            left: 245px;
+            content: " (or) Drag and Drop files here. ";
+            color: #3f8188;
+            font-weight: 900;
+        }
+
+        td {
+            width: 10%;
+        }
+
+        table {
+            width: 100vw;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        th,
+        td {
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
     </style>
 </head>
 
 <body>
-<div>
-]    <div class="upload-container" id="dropArea">
-        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" />
-        <label for="excelFileInput">Click here or drag and drop files to upload</label>
-    </div>
-    <br>
-    Price:
-    <input type="number" id="priceInput">
-    Size:
-    <textarea id="sizeTextarea" rows="10" cols="1" val>
-S
-M
-L
-XL
-    </textarea>
-    Color:
-    <textarea id="colorTextarea" rows="10" cols="3">
-Black
-White
-Sand
-Navy
-    </textarea><br>
-    <button onclick="extractData()">Extract Data</button>
+    <div style="width: 100%;">
+        <div class="upload-container" id="dropArea">
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" />
+            <label for="excelFileInput">Click here or drag and drop files to upload</label>
+        </div>
+        Size:
+        <input id="sizeTextarea" value="S,M,L,XL,2XL,3XL">
+        <div style="width: 100%; overflow-x: scroll;">
+            <table style="width: 100vw; border-collapse: collapse;" id="tableBody">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Màu sắc</th>
+                        <th>S</th>
+                        <th>M</th>
+                        <th>L</th>
+                        <th>XL</th>
+                        <th>2XL</th>
+                        <th>3XL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sản phẩm 1 -->
+                    <tr>
+                        <td><input type="text" value="T-Shirt Comfort Color"></td>
+                        <td><textarea type="text" cols="10"
+                                rows="2">Black, White, Pepper, Chambray, Ivory, Moss, Blossom, Orchid</textarea></td>
+                        <td><input type="text" value="29.99"></td>
+                        <td><input type="text" value="29.99"></td>
+                        <td><input type="text" value="30.99"></td>
+                        <td><input type="text" value="30.99"></td>
+                        <td><input type="text" value="30.99"></td>
+                        <td><input type="text" value="31.99"></td>
+                    </tr>
+                    <!-- Sản phẩm 2 -->
+                    <tr>
+                        <td><input type="text" value="T-Shirt Gildan"></td>
+                        <td><textarea type="text" cols="10"
+                                rows="2"> Black, White, Pepper, Sand, Military Green, Red, Light Blue, Light Pink"></textarea>
+                        </td>
+                        <td><input type="text" value="19.99"></td>
+                        <td><input type="text" value="20.99"></td>
+                        <td><input type="text" value="20.99"></td>
+                        <td><input type="text" value="22.99"></td>
+                        <td><input type="text" value="23.99"></td>
+                        <td><input type="text" value="25.99"></td>
+                    </tr>
+                    <!-- Sản phẩm 3 -->
+                    <tr>
+                        <td><input type="text" value="Sweatshirt"></td>
+                        <td><textarea type="text" cols="10"
+                                rows="2"> Black, White, Pepper, Sand, Military Green, Red, Light Blue, Light Pink"></textarea>
+                        </td>
+                        <td><input type="text" value="39.46"></td>
+                        <td><input type="text" value="40.99"></td>
+                        <td><input type="text" value="41.99"></td>
+                        <td><input type="text" value="42.99"></td>
+                        <td><input type="text" value="43.99"></td>
+                        <td><input type="text" value="44.99"></td>
+                    </tr>
+                    <!-- Sản phẩm 4 -->
+                    <tr>
+                        <td><input type="text" value="Hoodie"></td>
+                        <td><textarea type="text" cols="10"
+                                rows="2"> Black, White, Pepper, Sand, Military Green, Red, Light Blue, Light Pink"></textarea>
+                        </td>
+                        <td><input type="text" value="47.89"></td>
+                        <td><input type="text" value="47.99"></td>
+                        <td><input type="text" value="48.99"></td>
+                        <td><input type="text" value="48.99"></td>
+                        <td><input type="text" value="48.99"></td>
+                        <td><input type="text" value="48.99"></td>
+                    </tr>
+                    <tr class="add-row" onclick="addRow()">
+                        <td colspan="8" style="cursor: pointer; text-align: center;">Thêm dòng</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button onclick="extractData()">Extract Data</button>
 
-</div>
+    </div>
     <script>
+        function addRow(){
+            alert("Chưa có làm ^_^")
+        }
+
         function Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9) {
-    this.category = "Women's Tops/Women's T-shirts";
-    this.brand = "No brand";
-    this.product_name = productName;
-    this.product_description = `About this product:
+            this.category = "Women's Tops/Women's T-shirts";
+            this.brand = "No brand";
+            this.product_name = productName;
+            this.product_description = `About this product:
 
 Material: T-Shirt 100% cotton
 
@@ -125,135 +205,152 @@ Washing instructions: it is recommended to wash inside out, in cold water. Do no
 Shipping process: your order will be ready to ship in 1-3 business days
 
 100% SatisfactionIf there's an issue, please feel free to contact us, we will help you at our best! Thank you for choosing us! Wish you good health and happiness.`;
-    this.main_image = mainImage;
-    this.image_2 = image2;
-    this.image_3 = image3;
-    this.image_4 = image4;
-    this.image_5 = image5;
-    this.image_6 = image6;
-    this.image_7 = image7;
-    this.image_8 = image8;
-    this.image_9 = image9;
-    this.gtin_type = "";
-    this.gtin_code = "";
-    this.property_value_1 = "";
-    this.property_value_2 = "";
-    this.property_1_image = "";
-    this.parcel_weight = 0.66;
-    this.parcel_length = 4;
-    this.parcel_width = 4;
-    this.parcel_height = 1;
-    this.delivery = "";
-    this.price = 0;
-    this.quantity = 9999;
-    this.seller_sku = "";
-    this.size_chart = "";
-    this.product_property100157 = "";	
-    this.product_property100198 = "";	
-    this.product_property100393 = "";	
-    this.product_property100394 = "Long";	
-    this.product_property100395 = "";	
-    this.product_property100396 = "";	
-    this.product_property100397 = "";	
-    this.product_property100398 = "";	
-    this.product_property100399 = "";	
-    this.product_property100400 = "";	
-    this.product_property100403 = "";
-    this.aimed_product_status = "Active(1)";
-    this.err_info = "";
-}
+            this.main_image = mainImage;
+            this.image_2 = image2;
+            this.image_3 = image3;
+            this.image_4 = image4;
+            this.image_5 = image5;
+            this.image_6 = image6;
+            this.image_7 = image7;
+            this.image_8 = image8;
+            this.image_9 = image9;
+            this.gtin_type = "";
+            this.gtin_code = "";
+            this.property_value_1 = "";
+            this.property_value_2 = "";
+            this.property_1_image = "";
+            this.parcel_weight = 0.66;
+            this.parcel_length = 4;
+            this.parcel_width = 4;
+            this.parcel_height = 1;
+            this.delivery = "";
+            this.price = 0;
+            this.quantity = 9999;
+            this.seller_sku = "";
+            this.size_chart = "";
+            this.product_property100157 = "";
+            this.product_property100198 = "";
+            this.product_property100393 = "";
+            this.product_property100394 = "Long";
+            this.product_property100395 = "";
+            this.product_property100396 = "";
+            this.product_property100397 = "";
+            this.product_property100398 = "";
+            this.product_property100399 = "";
+            this.product_property100400 = "";
+            this.product_property100403 = "";
+            this.aimed_product_status = "Active(1)";
+            this.err_info = "";
+        }
 
         function readExcel() {
-    return new Promise(function (resolve, reject) {
-        var excelFileInput = document.getElementById('excelFileInput');
-        var file = excelFileInput.files[0];
-        var reader = new FileReader();
+            return new Promise(function (resolve, reject) {
+                var excelFileInput = document.getElementById('excelFileInput');
+                var file = excelFileInput.files[0];
+                var reader = new FileReader();
 
-        reader.onload = function (e) {
-            var data = new Uint8Array(e.target.result);
-            var workbook = XLSX.read(data, { type: 'array' });
+                reader.onload = function (e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
 
-            // Assuming we are interested in the first sheet
-            var sheetName = workbook.SheetNames[0];
-            var worksheet = workbook.Sheets[sheetName];
+                    // Assuming we are interested in the first sheet
+                    var sheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[sheetName];
 
-            // Convert sheet data to JSON format
-            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    // Convert sheet data to JSON format
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            // Extract relevant data columns
-            var products = [];
-            for (var i = 1; i < jsonData.length; i++) { // Start from index 1 to skip header row
-                var row = jsonData[i];
-                var productName = row[1]; // Assuming product name is in the second column (index 1)
-                var mainImage = row[2]; // Assuming main image URL is in the third column (index 2)
-                var image2 = row[3]; // Assuming image 2 URL is in the fourth column (index 3)
-                var image3 = row[4]; // Assuming image 3 URL is in the fifth column (index 4)
-                var image4 = row[5]; // Assuming image 4 URL is in the sixth column (index 5)
-                var image5 = row[6]; // Assuming image 5 URL is in the seventh column (index 6)
-                var image6 = row[7]; // Assuming image 6 URL is in the eighth column (index 7)
-                var image7 = row[8]; // Assuming image 7 URL is in the ninth column (index 8)
-                var image8 = row[9]; // Assuming image 8 URL is in the tenth column (index 9)
-                var image9 = row[10]; // Assuming image 9 URL is in the eleventh column (index 10)
+                    // Extract relevant data columns
+                    var products = [];
+                    for (var i = 1; i < jsonData.length; i++) { // Start from index 1 to skip header row
+                        var row = jsonData[i];
 
-                // Create a new Product object
-                var product = new Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9);
+                        // Check if the row is empty or not
+                        if (row.every(cell => cell === undefined || cell === null || cell === '')) {
+                            continue; // Skip this row if it is empty
+                        }
 
-                // Push the product object to the products array
-                products.push(product);
-            }
+                        var productName = row[1]; // Assuming product name is in the second column (index 1)
+                        var mainImage = row[2]; // Assuming main image URL is in the third column (index 2)
+                        var image2 = row[3]; // Assuming image 2 URL is in the fourth column (index 3)
+                        var image3 = row[4]; // Assuming image 3 URL is in the fifth column (index 4)
+                        var image4 = row[5]; // Assuming image 4 URL is in the sixth column (index 5)
+                        var image5 = row[6]; // Assuming image 5 URL is in the seventh column (index 6)
+                        var image6 = row[7]; // Assuming image 6 URL is in the eighth column (index 7)
+                        var image7 = row[8]; // Assuming image 7 URL is in the ninth column (index 8)
+                        var image8 = row[9]; // Assuming image 8 URL is in the tenth column (index 9)
+                        var image9 = row[10]; // Assuming image 9 URL is in the eleventh column (index 10)
 
-            resolve(products);
-        };
+                        // Create a new Product object
+                        var product = new Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9);
 
-        reader.onerror = function (error) {
-            reject(error);
-        };
+                        // Push the product object to the products array
+                        products.push(product);
+                    }
 
-        reader.readAsArrayBuffer(file);
-    });
-}
+                    resolve(products);
+                };
+
+                reader.onerror = function (error) {
+                    reject(error);
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
 
         function extractData() {
-            var sizeTextarea = document.getElementById('sizeTextarea');
-            var colorTextarea = document.getElementById('colorTextarea');
-            var priceInput = document.getElementById('priceInput').value;
-            console.log(readExcel())
             readExcel().then(function (products) {
-                var sizeData = sizeTextarea.value.split('\n').map(function (item) {
-                    return item.trim(); // Remove extra spaces
-                }).filter(function (item) {
-                    return item !== ''; // Remove empty lines
+
+                var rows = document.querySelectorAll('tbody tr:not(.add-row)');
+                var data = [];
+
+                rows.forEach(function (row) {
+                    var cells = row.querySelectorAll('td');
+                    var product = cells[0].querySelector('input').value;
+                    var colors = cells[1].querySelector('textarea').value.split(',').map(color => color.trim());
+                    var prices = Array.from(cells).slice(2).map(cell => cell.querySelector('input').value);
+
+                    data.push({
+                        product: product,
+                        colors: colors,
+                        prices: prices
+                    });
                 });
 
-                var colorData = colorTextarea.value.split('\n').map(function (item) {
-                    return item.trim(); // Remove extra spaces
-                }).filter(function (item) {
-                    return item !== ''; // Remove empty lines
-                });
+                console.log(data);
 
-                // Display or use sizeData and colorData arrays as needed
-                console.log('Size data:', sizeData);
-                console.log('Color data:', colorData);
+                var sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
 
                 var resultArray = [];
 
                 for (var p = 0; p < products.length; p++) {
                     var product = products[p];
-                    for (var i = 0; i < sizeData.length; i++) {
-                        for (var j = 0; j < colorData.length; j++) {
-                            // Tạo một bản sao của đối tượng product
-                            var newProduct = { ...product };
-                            // Thay đổi các thuộc tính trên bản sao
-                            newProduct.property_value_1 = colorData[j];
-                            newProduct.property_value_2 = sizeData[i];
-                            newProduct.price = priceInput;
-                            // Thêm bản sao đã thay đổi vào resultArray
-                            resultArray.push(newProduct);
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+
+                        // Lặp qua tất cả các size
+                        for (var j = 0; j < sizes.length; j++) {
+                            // Lặp qua các màu sắc và giá tương ứng
+                            for (var x = 0; x < dataItem.colors.length; x++) {
+
+                                // Tạo một bản sao của đối tượng product
+                                var newProduct = { ...product };
+                                // Thay đổi các thuộc tính trên bản sao
+                                newProduct.property_value_1 = dataItem.colors[x];
+                                newProduct.property_value_2 = sizes[j] + ' - ' + dataItem.product;
+                                newProduct.price = dataItem.prices[j % dataItem.prices.length]; // Sử dụng modulo để tránh lỗi nếu số lượng giá ít hơn số lượng màu sắc
+                                // Thêm bản sao đã thay đổi vào resultArray
+                                resultArray.push(newProduct);
+                            }
                         }
                     }
                 }
 
                 console.log(resultArray);
+                // var resultArray = [];
+                // console.log(resultArray);
 
                 // Lưu resultArray vào tệp Excel mới
                 writeToExcel(resultArray);
@@ -285,4 +382,3 @@ Shipping process: your order will be ready to ship in 1-3 business days
 </body>
 
 </html>
-
