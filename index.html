@@ -6,10 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thang.data</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
-    <script
-        src="data:text/javascript;base64,ZnVuY3Rpb24gdXBsb2FkRmlsZXMoKXt2YXIgZmlsZXM9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2ZpbGVfdXBsb2FkJykuZmlsZXM7aWYoZmlsZXMubGVuZ3RoPT0wKXthbGVydCgiUGxlYXNlIGZpcnN0IGNob29zZSBvciBkcm9wIGFueSBmaWxlKHMpLi4uIik7cmV0dXJufQp2YXIgZmlsZW5hbWVzPSIiO2Zvcih2YXIgaT0wO2k8ZmlsZXMubGVuZ3RoO2krKyl7ZmlsZW5hbWVzKz1maWxlc1tpXS5uYW1lKyJcbiJ9CmFsZXJ0KCJTZWxlY3RlZCBmaWxlKHMpIDpcbl9fX19fX19fX19fX19fX19fX19fXG4iK2ZpbGVuYW1lcyl9"
-        defer>
-        </script>
     <style>
         body {
             color: #3f8188;
@@ -99,6 +95,10 @@
         th {
             background-color: #f4f4f4;
         }
+
+        .action-buttons {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -108,8 +108,20 @@
             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" />
             <label for="excelFileInput">Click here or drag and drop files to upload</label>
         </div>
+        <div class="action-buttons">
+            <input type="text" id="columnNameInput" placeholder="Nhập tên cột mới" />
+            <button onclick="addColumn()">Thêm cột</button>
+            <button onclick="addRow()">Thêm dòng</button>
+            <button onclick="deleteColumn()">Xóa cột cuối</button>
+        </div>
         Size:
         <input id="sizeTextarea" value="S,M,L,XL,2XL,3XL">
+        <form>
+            <input type="radio" name="style" value="Comfort">
+            <label for="vehicle1"> Comfort</label><br>
+            <input type="radio" name="style" value="Sweetshirt, T-shirts">
+            <label for="vehicle2"> Sweetshirt, T-shirts</label><br>
+        </form>
         <div style="width: 100%; overflow-x: scroll;">
             <table style="width: 100vw; border-collapse: collapse;" id="tableBody">
                 <thead>
@@ -122,6 +134,7 @@
                         <th>XL</th>
                         <th>2XL</th>
                         <th>3XL</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,6 +149,7 @@
                         <td><input type="text" value="30.99"></td>
                         <td><input type="text" value="30.99"></td>
                         <td><input type="text" value="31.99"></td>
+                        <td><button onclick="deleteRow(this)">Xóa</button></td>
                     </tr>
                     <!-- Sản phẩm 2 -->
                     <tr>
@@ -149,35 +163,7 @@
                         <td><input type="text" value="22.99"></td>
                         <td><input type="text" value="23.99"></td>
                         <td><input type="text" value="25.99"></td>
-                    </tr>
-                    <!-- Sản phẩm 3 -->
-                    <tr>
-                        <td><input type="text" value="Sweatshirt"></td>
-                        <td><textarea type="text" cols="10"
-                                rows="2">Black, White, Pepper, Sand, Military Green, Red, Light Blue, Light Pink</textarea>
-                        </td>
-                        <td><input type="text" value="39.46"></td>
-                        <td><input type="text" value="40.99"></td>
-                        <td><input type="text" value="41.99"></td>
-                        <td><input type="text" value="42.99"></td>
-                        <td><input type="text" value="43.99"></td>
-                        <td><input type="text" value="44.99"></td>
-                    </tr>
-                    <!-- Sản phẩm 4 -->
-                    <tr>
-                        <td><input type="text" value="Hoodie"></td>
-                        <td><textarea type="text" cols="10"
-                                rows="2">Black, White, Pepper, Sand, Military Green, Red, Light Blue, Light Pink</textarea>
-                        </td>
-                        <td><input type="text" value="47.89"></td>
-                        <td><input type="text" value="47.99"></td>
-                        <td><input type="text" value="48.99"></td>
-                        <td><input type="text" value="48.99"></td>
-                        <td><input type="text" value="48.99"></td>
-                        <td><input type="text" value="48.99"></td>
-                    </tr>
-                    <tr class="add-row" onclick="addRow()">
-                        <td colspan="8" style="cursor: pointer; text-align: center;">Thêm dòng</td>
+                        <td><button onclick="deleteRow(this)">Xóa</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -186,43 +172,96 @@
 
     </div>
     <script>
-        function addRow(){
-            alert("Chưa có làm ^_^")
+        // Thêm chức năng thêm cột
+        function addColumn() {
+            var columnName = document.getElementById('columnNameInput').value;
+            if (columnName.trim() === '') {
+                alert("Vui lòng nhập tên cột.");
+                return;
+            }
+
+            var table = document.querySelector('#tableBody');
+
+            // Thêm tiêu đề cho cột mới
+            var thead = table.querySelector('thead tr');
+            var newHeader = document.createElement('th');
+            newHeader.innerText = columnName;
+            thead.insertBefore(newHeader, thead.cells[thead.cells.length - 1]);
+
+            // Thêm ô vào tất cả các hàng trong tbody
+            var tbodyRows = table.querySelectorAll('tbody tr');
+            tbodyRows.forEach(function (row) {
+                var newCell = row.insertCell(row.cells.length - 1); // Chèn trước cột "Action"
+                newCell.innerHTML = `<input type="text" value="0.00">`; // Ô chứa input với giá trị mặc định
+            });
+
+            // Reset lại ô nhập
+            document.getElementById('columnNameInput').value = '';
         }
 
-        function Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9) {
+        // Thêm chức năng xóa cột cuối cùng
+        function deleteColumn() {
+            var table = document.querySelector('#tableBody');
+            var columnIndex = table.rows[0].cells.length - 2; // Lấy vị trí của cột cuối cùng trước cột "Action"
+            if (columnIndex < 2) {
+                alert("Không thể xóa thêm cột.");
+                return;
+            }
+
+            // Xóa cột tiêu đề
+            table.rows[0].deleteCell(columnIndex);
+
+            // Xóa các ô trong các dòng còn lại
+            for (var i = 1; i < table.rows.length; i++) {
+                table.rows[i].deleteCell(columnIndex);
+            }
+        }
+
+        // Thêm dòng mới
+        function addRow() {
+            var tableBody = document.querySelector('#tableBody tbody');
+            var numberOfColumns = document.querySelector('#tableBody thead tr').cells.length;
+
+            var newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" value="Tên sản phẩm mới"></td>
+                <td><textarea type="text" cols="10" rows="2">Màu sắc mới</textarea></td>
+                ${'<td><input type="text" value="0.00"></td>'.repeat(numberOfColumns - 3)}
+                <td><button onclick="deleteRow(this)">Xóa</button></td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+
+        // Xóa dòng
+        function deleteRow(button) {
+            var row = button.parentElement.parentElement;
+            row.remove();
+        }
+
+        // Dưới đây là các chức năng cũ không thay đổi
+        function Product(productName, mainImage, images) {
             this.category = "Women's Tops/Women's T-shirts";
             this.brand = "No brand";
             this.product_name = productName;
-            this.product_description = `About this product:
-
-Material: T-Shirt 100% cotton
-
-Size: Please check the size charts before purchasing (S, M, L, 2XL, 3XL, 4XL, 5XL)
-
-Washing instructions: it is recommended to wash inside out, in cold water. Do not dry clean. Don's use bleach. Avoid ironing on the design
-
-Shipping process: your order will be ready to ship in 1-3 business days
-
-100% SatisfactionIf there's an issue, please feel free to contact us, we will help you at our best! Thank you for choosing us! Wish you good health and happiness.`;
+            this.product_description = ``;
             this.main_image = mainImage;
-            this.image_2 = image2;
-            this.image_3 = image3;
-            this.image_4 = image4;
-            this.image_5 = image5;
-            this.image_6 = image6;
-            this.image_7 = image7;
-            this.image_8 = image8;
-            this.image_9 = image9;
+            this.image_2 = images[0] || "";
+            this.image_3 = images[1] || "";
+            this.image_4 = images[2] || "";
+            this.image_5 = images[3] || "";
+            this.image_6 = images[4] || "";
+            this.image_7 = images[5] || "";
+            this.image_8 = images[6] || "";
+            this.image_9 = images[7] || "";
             this.gtin_type = "";
             this.gtin_code = "";
             this.property_value_1 = "";
             this.property_value_2 = "";
             this.property_1_image = "";
-            this.parcel_weight = 0.66;
-            this.parcel_length = 4;
-            this.parcel_width = 4;
-            this.parcel_height = 1;
+            this.parcel_weight = 0.44;
+            this.parcel_length = 10;
+            this.parcel_width = 10;
+            this.parcel_height = 10;
             this.delivery = "";
             this.price = 0;
             this.quantity = 9999;
@@ -244,6 +283,11 @@ Shipping process: your order will be ready to ship in 1-3 business days
         }
 
         function readExcel() {
+            var sizeChart = [
+                "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/c5c9f23afc0e4657ae22b17971a4f0d8~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=1432613627width=2000&height=2000",
+                "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/affe36e8171244e7ac573ab041995ff0~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=1432613627width=300&height=150"
+            ];
+
             return new Promise(function (resolve, reject) {
                 var excelFileInput = document.getElementById('excelFileInput');
                 var file = excelFileInput.files[0];
@@ -272,17 +316,37 @@ Shipping process: your order will be ready to ship in 1-3 business days
 
                         var productName = row[1]; // Assuming product name is in the second column (index 1)
                         var mainImage = row[2]; // Assuming main image URL is in the third column (index 2)
-                        var image2 = row[3]; // Assuming image 2 URL is in the fourth column (index 3)
-                        var image3 = row[4]; // Assuming image 3 URL is in the fifth column (index 4)
-                        var image4 = row[5]; // Assuming image 4 URL is in the sixth column (index 5)
-                        var image5 = row[6]; // Assuming image 5 URL is in the seventh column (index 6)
-                        var image6 = row[7]; // Assuming image 6 URL is in the eighth column (index 7)
-                        var image7 = row[8]; // Assuming image 7 URL is in the ninth column (index 8)
-                        var image8 = row[9]; // Assuming image 8 URL is in the tenth column (index 9)
-                        var image9 = row[10]; // Assuming image 9 URL is in the eleventh column (index 10)
+                        var images = row.slice(3, 11);
+
+                        // Filter out empty images
+                        images = images.filter(image => image);
+
+                        // Remove last 3 images if there are more than 3 images
+                        if (images.length > 3) {
+                            images.splice(-3); // Remove the last 3 images
+                        }
+
+                        // Lấy radio button đang được chọn
+                        var checkedRadio = document.querySelector('input[name="style"]:checked');
+
+                        if (checkedRadio) {
+                            var selectedValue = checkedRadio.value;
+
+                            if (selectedValue === 'Comfort') {
+                                // Nếu radio button "Comfort" được chọn
+                                images.push(sizeChart[0]); // Thêm ảnh từ sizeChart[1]
+                                // Thực hiện hành động tương ứng với Comfort
+                                console.log('Comfort selected. Image added from sizeChart[1]');
+                            } else if (selectedValue === 'Sweetshirt, T-shirts') {
+                                // Nếu radio button "Sweetshirt, T-shirts" được chọn
+                                images.push(sizeChart[1]); // Thêm ảnh từ sizeChart[2]
+                                // Thực hiện hành động tương ứng với Sweetshirt, T-shirts
+                                console.log('Sweetshirt, T-shirts selected. Image added from sizeChart[2]');
+                            }
+                        }
 
                         // Create a new Product object
-                        var product = new Product(productName, mainImage, image2, image3, image4, image5, image6, image7, image8, image9);
+                        var product = new Product(productName, mainImage, images);
 
                         // Push the product object to the products array
                         products.push(product);
@@ -299,18 +363,68 @@ Shipping process: your order will be ready to ship in 1-3 business days
             });
         }
 
-
         function extractData() {
-            readExcel().then(function (products) {
+            var descriptions = {
+                'Comfort': `PRODUCT DETAILS
+- Gender: Unisex - Men/Women
+- Age Group: Adult
+- Size: True to size. From S to 3XL
+- Material: 100% of cotton
+- Color: Black, White, Pepper, Chambray, Ivory, Moss, Blossom, Orchid
+- CARE INSTRUCTIONS
+Machine wash in warm/cold water.
+Do not bleach.
+Do not dry clean.
+Do not iron directly on the pattern.
+- PROCESSING: 1-2 days
+Soft and comfortable to wear
+Stylish and fashionable design. 
+Made from high-quality material for durability 100% Satisfaction. 
+If there's an issue, please feel free to contact us, we will help you at our best! 
+Thank you for choosing us! Wish you good health and happiness`,
+                'Sweetshirt, T-shirts': `PRODUCT DETAILS
+- Gender: Unisex - Men/Women
+- Age Group: Adult
+- Size: True to size. From S to 3XL
+- Material: 100% of cotton for T-Shirt and 60% polyester, 40% cotton
+- Color: Black, White, Sand, Military Green, Light Blue, Light Pink, Maroon, Navy, Sport Grey, Dark Heather
+- CARE INSTRUCTIONS
+Machine wash in warm/cold water.
+Do not bleach.
+Do not dry clean.
+Do not iron directly on the pattern.
+- PROCESSING: 1-2 days
+Soft and comfortable to wear
+Stylish and fashionable design. 
+Made from high-quality material for durability 100% Satisfaction. 
+If there's an issue, please feel free to contact us, we will help you at our best! 
+Thank you for choosing us! Wish you good health and happiness`
+            };
 
+            readExcel().then(function (products) {
                 var rows = document.querySelectorAll('tbody tr:not(.add-row)');
                 var data = [];
 
+                // Lấy radio button đang được chọn
+                var checkedRadio = document.querySelector('input[name="style"]:checked');
+
+                if (!checkedRadio) {
+                    alert('Vui lòng chọn loại sản phẩm (Comfort hoặc Sweetshirt, T-shirts)');
+                    return;
+                }
+
+                var selectedValue = checkedRadio.value;
+                var description = descriptions[selectedValue];
+
+                // Lấy tên các cột từ phần tiêu đề
+                var sizeHeaders = Array.from(document.querySelectorAll('thead th')).slice(2, -1).map(th => th.innerText);
+
+                // Lấy dữ liệu từng dòng
                 rows.forEach(function (row) {
                     var cells = row.querySelectorAll('td');
                     var product = cells[0].querySelector('input').value;
                     var colors = cells[1].querySelector('textarea').value.split(',').map(color => color.trim());
-                    var prices = Array.from(cells).slice(2).map(cell => cell.querySelector('input').value);
+                    var prices = Array.from(cells).slice(2, -1).map(cell => cell.querySelector('input').value);
 
                     data.push({
                         product: product,
@@ -319,38 +433,26 @@ Shipping process: your order will be ready to ship in 1-3 business days
                     });
                 });
 
-                console.log(data);
-
-                var sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
-
                 var resultArray = [];
 
                 for (var p = 0; p < products.length; p++) {
                     var product = products[p];
-                    for (var i = 0; i < data.length; i++) {
-                        var dataItem = data[i];
-
-                        // Lặp qua tất cả các size
-                        for (var j = 0; j < sizes.length; j++) {
-                            // Lặp qua các màu sắc và giá tương ứng
-                            for (var x = 0; x < dataItem.colors.length; x++) {
-
-                                // Tạo một bản sao của đối tượng product
-                                var newProduct = { ...product };
-                                // Thay đổi các thuộc tính trên bản sao
-                                newProduct.property_value_1 = dataItem.colors[x];
-                                newProduct.property_value_2 = sizes[j] + ' - ' + dataItem.product;
-                                newProduct.price = dataItem.prices[j % dataItem.prices.length]; // Sử dụng modulo để tránh lỗi nếu số lượng giá ít hơn số lượng màu sắc
-                                // Thêm bản sao đã thay đổi vào resultArray
+                    data.forEach(function (dataItem) {
+                        // Lặp qua các size và giá tương ứng
+                        sizeHeaders.forEach(function (size, index) {
+                            dataItem.colors.forEach(function (color) {
+                                var newProduct = { ...product }; // Tạo một bản sao của đối tượng product
+                                newProduct.property_value_1 = color;
+                                newProduct.property_value_2 = dataItem.product + ' - ' + size;
+                                newProduct.price = dataItem.prices[index];
+                                newProduct.product_description = description;
                                 resultArray.push(newProduct);
-                            }
-                        }
-                    }
+                            });
+                        });
+                    });
                 }
 
                 console.log(resultArray);
-                // var resultArray = [];
-                // console.log(resultArray);
 
                 // Lưu resultArray vào tệp Excel mới
                 writeToExcel(resultArray);
@@ -376,8 +478,6 @@ Shipping process: your order will be ready to ship in 1-3 business days
             XLSX.writeFile(workbook, fileName);
         }
     </script>
-
-
 
 </body>
 
